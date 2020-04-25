@@ -5,7 +5,13 @@ import React from "react";
 class ProfilePage extends React.Component {
   state = {};
 
+  constructor() {
+    super();
+    console.info(this.constructor.name, 'Component', this);
+  }
+
   render() {
+    console.log('ProfilePage', this);
     return <div>ProfilePage</div>
   }
 }

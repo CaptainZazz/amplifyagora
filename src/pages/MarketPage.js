@@ -4,8 +4,13 @@ import React from "react";
 class MarketPage extends React.Component {
   state = {};
 
+  constructor() {
+    super();
+    console.info(this.constructor.name, 'Component', this);
+  }
+
   render() {
-    return <div>MarketPage</div>;
+    return <div>MarketPage {this.props.marketId}</div>;
   }
 }
 
