@@ -3,11 +3,14 @@ import { API, graphqlOperation } from 'aws-amplify';
 import { createMarket } from '../graphql/mutations';
 import { UserContext } from '../App';
 // prettier-ignore
-import { Form, Button, Dialog, Input, Select, Notification } from 'element-react'
+import { Form, Button, Dialog, Input, Select, Notification } from 'element-react';
 
 class NewMarket extends React.Component {
   state = {
     name: '', 
+    tags: ["TagA", "TagB", "TagC"],
+    options: [],
+    selectedTags: [],
     addMarketDialog: false
   };
 
@@ -16,15 +19,29 @@ class NewMarket extends React.Component {
       this.setState({addMarketDialog:false});
       const input = { 
         name: this.state.name,
+        tags: this.state.selectedTags,
         owner: user.username // TODO Check API confirms this can't be used to push Items for another user. 
       };
       const result = await API.graphql(graphqlOperation(createMarket, {input}));
-      this.setState({name:''});
+      this.setState({name: '', selectedTags: []});
       console.log('handleAddMarket', result);
     } catch (e) {
       console.error("Error adding market", e);
       Notification.error({ title: 'Error', message: e.message || "Error adding market" });
     }
+  };
+
+  handleFilterTags = query => {
+    let options = this.state.tags.map(
+      tag => ({ value: tag, label: tag })
+    );
+    if (query) {
+      query = query.toLowerCase()
+      options = options.filter( 
+        tag => tag.label.toLowerCase().includes(query)
+      );
+    }
+    this.setState({options});
   };
 
   render() {
@@ -48,6 +65,17 @@ class NewMarket extends React.Component {
             <Form labelPosition="top">
               <Form.Item label="Add Market Name">
                 <Input placeholder="Market Name" value={this.state.name} onChange={name => this.setState({ name })} trim={true} />
+              </Form.Item>
+              <Form.Item label={"Add Tags " + this.state.options.length}>
+                <Select placeholder="Market Tags"
+                  multiple={true} filterable={true} remote={true} 
+                  onChange={selectedTags => this.setState({selectedTags})}
+                  remoteMethod={this.handleFilterTags}
+                >
+                  {this.state.options.map(option => (
+                    <Select.Option key={option.value} label={option.label} value={option.value} />
+                  ))}
+                </Select>
               </Form.Item>
             </Form>
           </Dialog.Body>
