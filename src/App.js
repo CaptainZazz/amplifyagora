@@ -8,6 +8,8 @@ import ProfilePage from './pages/ProfilePage';
 import MarketPage from './pages/MarketPage';
 import NavBar from './components/Navbar';
 
+export const UserContext = React.createContext();
+
 class App extends React.Component {
   state = {
     user: null
@@ -64,29 +66,33 @@ class App extends React.Component {
     if (!user) {
       return <Authenticator {...{theme}} />;
     }
-    return <Router>
-      <React.Fragment>
+    return (
+      <UserContext.Provider value={{ user }}>
+        <Router>
+          <React.Fragment>
 
-        {/* Navigation */}
-        <NavBar user={user} handleSignout={this.handleSignout} />
+            {/* Navigation */}
+            <NavBar user={user} handleSignout={this.handleSignout} />
 
-        {/* Routes */}
-        <div className="app-container">
-          <Switch>
-            <Route exact path="/" component={HomePage} />
-            <Route path="/profile" component={ProfilePage} />
-            <Route path="/markets/:marketId" component={({ match }) => <MarketPage marketId={match.params.marketId} />} />
-            <Route component={(props) => (
-              <div>
-                <h3>Page not found</h3>
-                <pre>{JSON.stringify(props, null, '  ')}</pre>
-              </div>
-            )} />
-          </Switch>
-        </div>
+            {/* Routes */}
+            <div className="app-container">
+              <Switch>
+                <Route exact path="/" component={HomePage} />
+                <Route path="/profile" component={ProfilePage} />
+                <Route path="/markets/:marketId" component={({ match }) => <MarketPage marketId={match.params.marketId} />} />
+                <Route component={(props) => (
+                  <div>
+                    <h3>Page not found</h3>
+                    <pre>{JSON.stringify(props, null, '  ')}</pre>
+                  </div>
+                )} />
+              </Switch>
+            </div>
 
-      </React.Fragment>
-    </Router>;
+          </React.Fragment>
+        </Router>
+      </UserContext.Provider>
+    );
   }
 }
 
