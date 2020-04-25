@@ -1,4 +1,6 @@
 import React from "react";
+import NewMarket from '../components/NewMarket';
+import MarketList from '../components/MarketList';
 
 class HomePage extends React.Component {
   state = {};
@@ -9,8 +11,11 @@ class HomePage extends React.Component {
   }
 
   render() {
-    console.log('HomePage', this);
-    return <div>Home</div>;
+    return <>
+      <h1>Home</h1>
+      <NewMarket />
+      <MarketList />
+    </>;
   }
 }
 
