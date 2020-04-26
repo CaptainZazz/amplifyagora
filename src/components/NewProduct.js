@@ -13,7 +13,8 @@ const initialState = {
   shipped: false,
   imagePreview: '',
   image: '',
-  isUploading: false
+  isUploading: false,
+  percentUploaded: 0
 };
 
 class NewProduct extends React.Component {
@@ -29,7 +30,11 @@ class NewProduct extends React.Component {
       const visibility = "public";
       const filename = `/${visibility}/${identityId}/${Date.now()}-${this.state.image.name}`
       
-      const uploadedFile = await uploadImage(filename, this.state.image);
+      const uploadedFile = await uploadImage(
+        filename, 
+        this.state.image, 
+        ({loaded, total}) => this.setState({ percentUploaded: Math.round((loaded/total)*100) })
+      );
       console.log('handleAddProduct', 'uploadedFile', uploadedFile);
       await submitProduct({
         productMarketId: this.props.marketId,
@@ -52,7 +57,7 @@ class NewProduct extends React.Component {
   };
 
   render() {
-    const { description, price, image, shipped, imagePreview, isUploading } = this.state;
+    const { description, price, image, shipped, imagePreview, isUploading, percentUploaded } = this.state;
     return (
       <div className="flex-canter">
         <h2 className="header">Add New Product</h2>
@@ -75,6 +80,7 @@ class NewProduct extends React.Component {
             </Form.Item>
 
             {imagePreview && <img className="image-preview" src={imagePreview} alt="Product Preview"></img>}
+            {percentUploaded > 0 && <Progress type="circle" className="progress" percentage={percentUploaded} />}
             <PhotoPicker
               title="Product Image"
               preview="hidden"
@@ -134,9 +140,12 @@ async function getCredentials() {
   }
 }
 
-async function uploadImage(filename, image) {
+async function uploadImage(filename, image, progressCallback) {
   try{
-    const result = await Storage.put(filename, image.file, { contentType: image.type });
+    const result = await Storage.put(filename, image.file, { 
+      contentType: image.type, 
+      progressCallback 
+    });
     console.info('NewProduct.uploadImage', {filename, image, result});
     return result;
   } catch(e) {
