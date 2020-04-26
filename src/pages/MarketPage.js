@@ -73,7 +73,7 @@ class MarketPage extends React.Component {
         {/* List Products */}
         <Tabs.Pane label={<><Icon name="menu" className="icon" />Products ({market.products.items.length})</>} name="2">
           {market.products.items.map(product => (
-            <Product product={product} />
+            <Product key={product.id} product={product} />
           ))}
         </Tabs.Pane>
       </Tabs>
