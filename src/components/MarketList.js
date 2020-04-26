@@ -3,12 +3,21 @@ import { Link } from "react-router-dom";
 import { graphqlOperation } from "aws-amplify";
 import { Connect } from "aws-amplify-react";
 import { listMarkets } from "../graphql/queries";
+import { onCreateMarket } from "../graphql/subscriptions";
 import Error from "./Error";
 import { Loading, Card, Icon, Tag } from "element-react";
 
 const MarketList = () => {
+  const onNewMarket = (prevQuery, newData) => {
+    const updatedQuery = { ...prevQuery };
+    updatedQuery.listMarkets.items = [newData.onCreateMarket, ...prevQuery.listMarkets.items ];
+    return updatedQuery;
+  };
+
   return <Connect
     query={graphqlOperation(listMarkets)}
+    subscription={graphqlOperation(onCreateMarket)}
+    onSubscriptionMsg={onNewMarket}
   >
     {({data, loading, errors}) => {
       if (errors.length) return <Error errors={errors} />;
