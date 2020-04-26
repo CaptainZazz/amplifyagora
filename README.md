@@ -1,3 +1,7 @@
+# Serverless React with AWS Amplify - The Complete Guide
+https://subscription.packtpub.com/video/cloud_and_networking/9781839219726/p9/video9_1/-initializing-our-marketplace-app
+https://github.com/reedbarger/amplifyagora
+
 ## schema.graphql
 
 ```graphql
