@@ -1,4 +1,6 @@
 import React from "react";
+import { API, graphqlOperation } from 'aws-amplify';
+import { searchMarkets } from '../graphql/queries';
 import NewMarket from '../components/NewMarket';
 import MarketList from '../components/MarketList';
 
@@ -16,9 +18,26 @@ class HomePage extends React.Component {
 
   handleSearchChange = searchTerm => this.setState({ searchTerm });
   handleClearSearch = () => this.setState({ searchTerm: '', searchResults: [] });
-  handleSearch = event => {
+  handleSearch = async event => {
     event.preventDefault();
     console.log('handleSearch', this.state.searchTerm);
+    try {
+      this.setState({ isSearching: true });
+      const result = await API.graphql(graphqlOperation(searchMarkets, { // https://docs.amplify.aws/cli/graphql-transformer/directives#generates-4
+        filter: {
+          or: [ 
+            { name:  { wildcard: `*${this.state.searchTerm}*` } }, 
+            { owner: { match: this.state.searchTerm } }, 
+            { tags:  { match: this.state.searchTerm } }, 
+          ]
+        }
+      }));
+      console.info(`Search "${this.state.searchTerm}"`, result.data.searchMarkets);
+      this.setState({ isSearching: false, searchResults: result.data.searchMarkets.items });
+    } catch(e) {
+      console.error(e);
+      this.setState({ isSearching: false });
+    } 
   }
 
   render() {
@@ -31,7 +50,7 @@ class HomePage extends React.Component {
         handleClearSearch={this.handleClearSearch} 
         handleSearch={this.handleSearch}
       />
-      <MarketList />
+      <MarketList searchResults={this.state.searchResults} />
     </>;
   }
 }

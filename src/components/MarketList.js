@@ -7,7 +7,7 @@ import { onCreateMarket } from "../graphql/subscriptions";
 import Error from "./Error";
 import { Loading, Card, Icon, Tag } from "element-react";
 
-const MarketList = () => {
+const MarketList = ({ searchResults }) => {
   const onNewMarket = (prevQuery, newData) => {
     const updatedQuery = { ...prevQuery };
     updatedQuery.listMarkets.items = [newData.onCreateMarket, ...prevQuery.listMarkets.items ];
@@ -22,12 +22,12 @@ const MarketList = () => {
     {({data, loading, errors}) => {
       if (errors.length) return <Error errors={errors} />;
       if (loading || !data.listMarkets) return <Loading fullscreen={true} />;
+
+      const markets = searchResults.length ? searchResults : data.listMarkets.items;
+
       return <>
-        <h2>
-          <img src="https://icon.now.sh/store_mall_directory/527FFF" alt="Store Icon" className="large-icon" />
-          Markets
-        </h2>
-        {data.listMarkets.items.map(market => (
+        <MarketListHeader numSearchResults={searchResults.length} />
+        {markets.map(market => (
           <div key={market.id} className="my-2">
             <Card bodyStyle={{
               padding: '0.7em',
@@ -51,5 +51,18 @@ const MarketList = () => {
     }}
   </Connect>;
 };
+
+const MarketListHeader = ({ numSearchResults }) => {
+  if (numSearchResults) {
+    return <h2 className="text-green">
+      <Icon type="success" name="check" className="icon" />
+      {numSearchResults} {numSearchResults===1 ? 'Result' : 'Results'}
+    </h2>
+  }
+  return <h2>
+    <img src="https://icon.now.sh/store_mall_directory/527FFF" alt="Store Icon" className="large-icon" />
+    Markets
+  </h2>;
+}
 
 export default MarketList;
