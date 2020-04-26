@@ -29,22 +29,7 @@ const MarketList = ({ searchResults }) => {
         <MarketListHeader numSearchResults={searchResults.length} />
         {markets.map(market => (
           <div key={market.id} className="my-2">
-            <Card bodyStyle={{
-              padding: '0.7em',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between'
-            }}>
-              <div>
-                <span className="flex">
-                  <Link className="link" to={`/markets/${market.id}`}>{market.name}</Link>
-                  <span style={{ color: 'var(--darkAmazonOrange)'}}>{ JSON.stringify(market.products) }</span>
-                  <img src="https://icon.now.sh/shopping_cart/f60" alt="Shopping Cart" />
-                </span>
-                <div style={{ color: "var(--lightSquidInk)" }}>{market.owner}</div>
-              </div>
-              <div>{market.tags && market.tags.map( tag => <Tag key={tag} type="danger" className="mx-1">{tag}</Tag> )}</div>
-            </Card>
+            <MarketListItem market={market} />
           </div>
         ))}
       </>;
@@ -63,6 +48,25 @@ const MarketListHeader = ({ numSearchResults }) => {
     <img src="https://icon.now.sh/store_mall_directory/527FFF" alt="Store Icon" className="large-icon" />
     Markets
   </h2>;
+};
+
+const MarketListItem = ({ market }) => {
+  return <Card bodyStyle={{
+    padding: '0.7em',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  }}>
+    <div>
+      <span className="flex">
+        <Link className="link" to={`/markets/${market.id}`}>{market.name}</Link>
+        <span style={{ color: 'var(--darkAmazonOrange)'}}>{ JSON.stringify(market.products) }</span>
+        <img src="https://icon.now.sh/shopping_cart/f60" alt="Shopping Cart" />
+      </span>
+      <div style={{ color: "var(--lightSquidInk)" }}>{market.owner}</div>
+    </div>
+    <div>{market.tags && market.tags.map( tag => <Tag key={tag} type="danger" className="mx-1">{tag}</Tag> )}</div>
+  </Card>
 }
 
 export default MarketList;
