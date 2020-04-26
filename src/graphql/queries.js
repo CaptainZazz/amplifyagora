@@ -49,7 +49,7 @@ export const getProduct = /* GraphQL */ `
     getProduct(id: $id) {
       id
       description
-      markets {
+      market {
         id
         name
         products {
@@ -60,7 +60,7 @@ export const getProduct = /* GraphQL */ `
         createdAt
       }
       file {
-        bucker
+        bucket
         region
         key
       }
@@ -81,7 +81,7 @@ export const listProducts = /* GraphQL */ `
       items {
         id
         description
-        markets {
+        market {
           id
           name
           tags
@@ -89,7 +89,7 @@ export const listProducts = /* GraphQL */ `
           createdAt
         }
         file {
-          bucker
+          bucket
           region
           key
         }

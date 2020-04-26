@@ -72,7 +72,7 @@ export const onCreateProduct = /* GraphQL */ `
     onCreateProduct(owner: $owner) {
       id
       description
-      markets {
+      market {
         id
         name
         products {
@@ -83,7 +83,7 @@ export const onCreateProduct = /* GraphQL */ `
         createdAt
       }
       file {
-        bucker
+        bucket
         region
         key
       }
@@ -99,7 +99,7 @@ export const onUpdateProduct = /* GraphQL */ `
     onUpdateProduct(owner: $owner) {
       id
       description
-      markets {
+      market {
         id
         name
         products {
@@ -110,7 +110,7 @@ export const onUpdateProduct = /* GraphQL */ `
         createdAt
       }
       file {
-        bucker
+        bucket
         region
         key
       }
@@ -126,7 +126,7 @@ export const onDeleteProduct = /* GraphQL */ `
     onDeleteProduct(owner: $owner) {
       id
       description
-      markets {
+      market {
         id
         name
         products {
@@ -137,7 +137,7 @@ export const onDeleteProduct = /* GraphQL */ `
         createdAt
       }
       file {
-        bucker
+        bucket
         region
         key
       }

@@ -84,7 +84,7 @@ export const createProduct = /* GraphQL */ `
     createProduct(input: $input, condition: $condition) {
       id
       description
-      markets {
+      market {
         id
         name
         products {
@@ -95,7 +95,7 @@ export const createProduct = /* GraphQL */ `
         createdAt
       }
       file {
-        bucker
+        bucket
         region
         key
       }
@@ -114,7 +114,7 @@ export const updateProduct = /* GraphQL */ `
     updateProduct(input: $input, condition: $condition) {
       id
       description
-      markets {
+      market {
         id
         name
         products {
@@ -125,7 +125,7 @@ export const updateProduct = /* GraphQL */ `
         createdAt
       }
       file {
-        bucker
+        bucket
         region
         key
       }
@@ -144,7 +144,7 @@ export const deleteProduct = /* GraphQL */ `
     deleteProduct(input: $input, condition: $condition) {
       id
       description
-      markets {
+      market {
         id
         name
         products {
@@ -155,7 +155,7 @@ export const deleteProduct = /* GraphQL */ `
         createdAt
       }
       file {
-        bucker
+        bucket
         region
         key
       }
@@ -225,7 +225,7 @@ export const createOrder = /* GraphQL */ `
       product {
         id
         description
-        markets {
+        market {
           id
           name
           tags
@@ -233,7 +233,7 @@ export const createOrder = /* GraphQL */ `
           createdAt
         }
         file {
-          bucker
+          bucket
           region
           key
         }
