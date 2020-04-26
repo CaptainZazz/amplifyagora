@@ -66,7 +66,7 @@ class MarketPage extends React.Component {
         {/* New Product */}
         {isMarketOwner && (
           <Tabs.Pane label={<><Icon name="plus" className="icon" />Add Product</>} name="1">
-            <NewProduct />
+            <NewProduct marketId={this.props.marketId} />
           </Tabs.Pane>
         )}
 
