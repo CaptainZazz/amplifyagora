@@ -1,6 +1,5 @@
 import React from "react";
 import { API, graphqlOperation } from 'aws-amplify';
-import { getMarket } from '../graphql/queries';
 import { Loading, Tabs, Icon } from "element-react";
 import { Link } from "react-router-dom";
 import NewProduct from '../components/NewProduct';
@@ -25,7 +24,7 @@ class MarketPage extends React.Component {
   handleGetMarket = async () => {
     const input = { id: this.props.marketId };
     try {
-      const result = await API.graphql(graphqlOperation(getMarket, input));
+      const result = await API.graphql(graphqlOperation(getMarketWithFile, input));
       console.log({ result });
       this.setState(
         { market: result.data.getMarket },
@@ -80,5 +79,18 @@ class MarketPage extends React.Component {
     </>;
   }
 }
+
+// Not using auto-generated query because it doesn't include custom type (file: S3Object!)
+const getMarketWithFile = /* GraphQL */ `
+  query GetMarket($id: ID!) {
+    getMarket(id: $id) {
+      id name tags owner createdAt
+      products {
+        items { id description price shipped owner createdAt file{key} }
+        nextToken
+      }
+    }
+  }
+`;
 
 export default MarketPage;
