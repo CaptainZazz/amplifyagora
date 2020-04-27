@@ -1,7 +1,7 @@
 import React from "react";
 import { API, graphqlOperation } from "aws-amplify";
 import { S3Image } from "aws-amplify-react";
-import { updateProduct } from "../graphql/mutations";
+import { updateProduct, deleteProduct } from "../graphql/mutations";
 import { convertCentsToDollars, convertDollarsToCents } from "../utils";
 import { UserContext } from "../App";
 import PayButton from "./PayButton";
@@ -11,6 +11,7 @@ import { Notification, Popover, Button, Dialog, Card, Form, Input, Radio } from 
 class Product extends React.Component {
   state = {
     updateProductDialog: false,
+    deleteProductDialog: false,
     description: '',
     price: '',
     shipped: false
@@ -22,7 +23,7 @@ class Product extends React.Component {
       const { description, price, shipped } = this.state;
       const input = { id: productId, description, shipped, price: convertDollarsToCents(price) };
       const result = await API.graphql(graphqlOperation(updateProduct, {input}));
-      console.log({result});
+      console.log('handleUpdateProduct', {result});
       Notification.success({ 
         title: "Success", 
         message: "Product sucessfully updated!", 
@@ -32,6 +33,24 @@ class Product extends React.Component {
     } catch(e) {
       Notification.error({ title: "Error", message: `Failed to update product "${productId}".` });
       console.error(`Failed to update product "${productId}".`, e);
+    }
+  }
+
+  handleDeleteProduct = async productId => {
+    try {
+      this.setState({ deleteProductDialog: false });
+      const input = { id: productId };
+      const result = await API.graphql(graphqlOperation(deleteProduct, {input}))
+      console.log('handleDeleteProduct', {result});
+      Notification.success({ 
+        title: "Success", 
+        message: "Product sucessfully deleted!", 
+        duration: 3000,
+        onClose: () => window.location.reload() 
+      });
+    } catch(e) {
+      Notification.error({ title: "Error", message: `Failed to delete product "${productId}".` });
+      console.error(`Failed to delete product "${productId}".`, e);
     }
   }
   
@@ -44,8 +63,8 @@ class Product extends React.Component {
   }
 
   renderBody(user) {
-    const { product} = this.props;
-    const { updateProductDialog, description, price, shipped } = this.state;
+    const { product } = this.props;
+    const { updateProductDialog, deleteProductDialog, description, price, shipped } = this.state;
     const isProductOwner = user && user.attributes.sub === product.owner;
 
     return <>
@@ -74,8 +93,16 @@ class Product extends React.Component {
             description: product.description,
             shipped: product.shipped,
             price: convertCentsToDollars(product.price)
-          }) } />
-          <Button type="danger"  icon="delete" className="m-1" onClick={ () => console.log('delete') } />
+          }) }>Edit</Button>
+          <Popover placement="top" width="160" trigger="click" visible={deleteProductDialog} content={<>
+            <p>Do you want to delete this?</p>
+            <div className="text-right">
+              <Button type="text"    size="mini" className="m-1" onClick={() => this.setState({ deleteProductDialog: false })}>Cancel</Button>
+              <Button type="primary" size="mini" className="m-1" onClick={() => this.handleDeleteProduct(product.id)}         >Confirm</Button>
+            </div>
+          </>}>
+            <Button type="danger"  icon="delete" className="m-1" onClick={ () => this.setState({ deleteProductDialog: true }) }>Delete</Button>
+          </Popover>
         </>}
       </div>
 
