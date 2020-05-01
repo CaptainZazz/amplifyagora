@@ -1,9 +1,12 @@
 import React from "react";
 import { API, graphqlOperation } from 'aws-amplify';
 import { Loading, Tabs, Icon } from "element-react";
+import { Notification } from "element-react";
 import { Link } from "react-router-dom";
+import { onCreateProduct, onUpdateProduct, onDeleteProduct } from '../graphql/subscriptions';
 import NewProduct from '../components/NewProduct';
 import Product from '../components/Product';
+import { updateProduct } from "../graphql/mutations";
 
 class MarketPage extends React.Component {
   state = {
@@ -19,6 +22,77 @@ class MarketPage extends React.Component {
 
   componentDidMount() {
     this.handleGetMarket();
+    const input = { owner: this.props.user && this.props.user.attributes.sub };
+
+    this.createProductListener = API.graphql(graphqlOperation(onCreateProduct, input)).subscribe({
+      next: productData => {
+        try{
+          const createdProduct = productData.value.data.onCreateProduct;
+          const prevProducts = this.state.market.products.items.filter(item => item.id !== createdProduct.id);
+          const market = { ...this.state.market };
+          market.products.items = [ createdProduct, ...prevProducts ];
+          this.setState({ market });
+          console.log('MarketPage.createProductListener', {productData, market});
+          Notification.success({ title: `MarketPage`, message: 'createProductListener'});
+        } catch(e) {
+          console.warn(`MarketPage.createProductListener`, e); 
+          Notification.warning({ title: `MarketPage`, message: `createProductListener`});
+        }
+      },
+      error: (e) => { 
+        console.warn(`MarketPage`, `Failed to create createProductListener.\n${e.errors.map(({message}) => message).join('\n')}\n`, e); 
+        Notification.warning({ title: `MarketPage`, message: 'Failed to create createProductListener.' });
+      }
+    });
+
+    this.updateProductListener = API.graphql(graphqlOperation(onUpdateProduct, input)).subscribe({
+      next: productData => {
+        try{
+          const updatedProduct = productData.value.data.onUpdateProduct;
+          const prevProducts = this.state.market.products.items;
+          const updatedProductIndex = prevProducts.findIndex(item => item.id === updatedProduct.id);
+          const market = { ...this.state.market };
+          market.products.items = [ ...prevProducts.slice(0, updatedProductIndex), updatedProduct, ...prevProducts.slice(updatedProductIndex+1) ];
+          this.setState({ market });
+          console.log('MarketPage.updateProductListener', {productData, market});
+          Notification.success({ title: `MarketPage`, message: 'updateProductListener'});
+        } catch(e) {
+          console.warn(`MarketPage.updateProductListener`, e); 
+          Notification.warning({ title: `MarketPage.updateProductListener`, message: e.message});
+        }
+      },
+      error: (e) => { 
+        console.warn(`MarketPage`, `Failed to create updateProductListener.\n${e.errors.map(({message}) => message).join('\n')}\n`, e); 
+        Notification.warning({ title: `MarketPage`, message: 'Failed to create updateProductListener.' });
+      }
+    });
+    
+
+    this.deleteProductListener = API.graphql(graphqlOperation(onDeleteProduct, input)).subscribe({
+      next: productData => {
+        try{
+          const deletedProduct = productData.value.data.onDeleteProduct;
+          const market = { ...this.state.market };
+          market.products.items = this.state.market.products.items.filter(item => item.id !== deletedProduct.id);
+          this.setState({ market });
+          console.log('MarketPage.deleteProductListener', {productData, market});
+          Notification.success({ title: `MarketPage`, message: 'deleteProductListener'});
+        } catch(e) {
+          console.warn(`MarketPage.deleteProductListener`, e); 
+          Notification.warning({ title: `MarketPage.deleteProductListener`, message: e.message});
+        }
+      },
+      error: (e) => { 
+        console.warn(`MarketPage`, `Failed to create deleteProductListener.\n${e.errors.map(({message}) => message).join('\n')}\n`, e); 
+        Notification.warning({ title: `MarketPage`, message: 'Failed to create deleteProductListener.' });
+      }
+    });
+
+  }
+  componentWillUnmount() {
+    this.createProductListener.unsubscribe();
+    this.updateProductListener.unsubscribe();
+    this.deleteProductListener.unsubscribe();
   }
 
   handleGetMarket = async () => {

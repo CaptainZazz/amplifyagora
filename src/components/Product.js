@@ -24,12 +24,7 @@ class Product extends React.Component {
       const input = { id: productId, description, shipped, price: convertDollarsToCents(price) };
       const result = await API.graphql(graphqlOperation(updateProduct, {input}));
       console.log('handleUpdateProduct', {result});
-      Notification.success({ 
-        title: "Success", 
-        message: "Product sucessfully updated!", 
-        duration: 3000,
-        onClose: () => window.location.reload() 
-      });
+      Notification.success({ title: "Success", message: "Product sucessfully updated!" });
     } catch(e) {
       Notification.error({ title: "Error", message: `Failed to update product "${productId}".` });
       console.error(`Failed to update product "${productId}".`, e);
@@ -42,12 +37,7 @@ class Product extends React.Component {
       const input = { id: productId };
       const result = await API.graphql(graphqlOperation(deleteProduct, {input}))
       console.log('handleDeleteProduct', {result});
-      Notification.success({ 
-        title: "Success", 
-        message: "Product sucessfully deleted!", 
-        duration: 3000,
-        onClose: () => window.location.reload() 
-      });
+      Notification.success({ title: "Success", message: "Product sucessfully deleted!" });
     } catch(e) {
       Notification.error({ title: "Error", message: `Failed to delete product "${productId}".` });
       console.error(`Failed to delete product "${productId}".`, e);
