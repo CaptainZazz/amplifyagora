@@ -6,9 +6,6 @@ or in the "license" file accompanying this file. This file is distributed on an 
 See the License for the specific language governing permissions and limitations under the License.
 */
 
-
-
-
 var express = require('express')
 var bodyParser = require('body-parser')
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
@@ -29,59 +26,34 @@ app.use(function(req, res, next) {
 /**********************
  * Example get method *
  **********************/
-
-app.get('/charge', function(req, res) {
-  // Add your code here
-  res.json({success: 'get call succeed!', url: req.url});
-});
-
-app.get('/charge/*', function(req, res) {
-  // Add your code here
-  res.json({success: 'get call succeed!', url: req.url});
-});
+// app.get('/charge', function(req, res) { res.json({success: 'get call succeed!', url: req.url}); });
+// app.get('/charge/*', function(req, res) { res.json({success: 'get call succeed!', url: req.url}); });
 
 /****************************
 * Example post method *
 ****************************/
 
 app.post('/charge', function(req, res) {
-  // Add your code here
   res.json({success: 'post call succeed!', url: req.url, body: req.body})
 });
 
 app.post('/charge/*', function(req, res) {
-  // Add your code here
   res.json({success: 'post call succeed!', url: req.url, body: req.body})
 });
 
 /****************************
 * Example put method *
 ****************************/
-
-app.put('/charge', function(req, res) {
-  // Add your code here
-  res.json({success: 'put call succeed!', url: req.url, body: req.body})
-});
-
-app.put('/charge/*', function(req, res) {
-  // Add your code here
-  res.json({success: 'put call succeed!', url: req.url, body: req.body})
-});
+// app.put('/charge', function(req, res) { res.json({success: 'put call succeed!', url: req.url, body: req.body}) });
+// app.put('/charge/*', function(req, res) { res.json({success: 'put call succeed!', url: req.url, body: req.body}) });
 
 /****************************
 * Example delete method *
 ****************************/
+// app.delete('/charge', function(req, res) { res.json({success: 'delete call succeed!', url: req.url}); });
+// app.delete('/charge/*', function(req, res) { res.json({success: 'delete call succeed!', url: req.url}); });
 
-app.delete('/charge', function(req, res) {
-  // Add your code here
-  res.json({success: 'delete call succeed!', url: req.url});
-});
-
-app.delete('/charge/*', function(req, res) {
-  // Add your code here
-  res.json({success: 'delete call succeed!', url: req.url});
-});
-
+// Start
 app.listen(3000, function() {
     console.log("App started")
 });

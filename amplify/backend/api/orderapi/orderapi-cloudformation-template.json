@@ -14,15 +14,15 @@
         },
     
     
-          "functionchargelambdaName": {
+          "functionorderlambdaName": {
             "Type": "String",
-            "Default": "functionchargelambdaName"
+            "Default": "functionorderlambdaName"
           },
         
           
-          "functionchargelambdaArn": {
+          "functionorderlambdaArn": {
             "Type": "String",
-            "Default": "functionchargelambdaArn"
+            "Default": "functionorderlambdaArn"
           }
         
           
@@ -278,7 +278,7 @@
                             
                             {
                                 
-                                "Ref": "functionchargelambdaArn"
+                                "Ref": "functionorderlambdaArn"
                             },
                             
                             "/invocations"
@@ -383,7 +383,7 @@
                           
                           {
                             
-                            "Ref": "functionchargelambdaArn"
+                            "Ref": "functionorderlambdaArn"
                           },
                           
                           "/invocations"
@@ -440,12 +440,12 @@
                   
         
         
-        "functionchargelambdaPermissionorderapi": {
+        "functionorderlambdaPermissionorderapi": {
             "Type": "AWS::Lambda::Permission",
             "Properties": {
                 "FunctionName": 
                     {
-                        "Ref":  "functionchargelambdaName"
+                        "Ref":  "functionorderlambdaName"
                     },
                     
                     "Action": "lambda:InvokeFunction",
@@ -475,7 +475,7 @@
         
         
         
-      "DeploymentAPIGWorderapi": {
+      "DeploymentAPIGWorderapi65996c48": {
         "Type": "AWS::ApiGateway::Deployment",
         "Properties": {
           "Description": "The Development stage deployment of your API.",

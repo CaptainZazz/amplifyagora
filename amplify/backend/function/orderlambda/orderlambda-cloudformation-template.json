@@ -33,12 +33,12 @@
 				"FunctionName": {
 					"Fn::If": [
 						"ShouldNotCreateEnvResources",
-						"chargelambda",
+						"orderlambda",
 						{
 							"Fn::Join": [
 								"",
 								[
-									"chargelambda",
+									"orderlambda",
 									"-",
 									{
 										"Ref": "env"
@@ -68,7 +68,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "amplify-amplifyagora-dev-122948-deployment",
-					"S3Key": "amplify-builds/chargelambda-47584942597434444c68-build.zip"
+					"S3Key": "amplify-builds/orderlambda-7551596938397347672f-build.zip"
 				}
 			}
 		},
@@ -78,12 +78,12 @@
 				"RoleName": {
 					"Fn::If": [
 						"ShouldNotCreateEnvResources",
-						"amplifyagoraLambdaRole7d6d7125",
+						"amplifyagoraLambdaRole1bed91e9",
 						{
 							"Fn::Join": [
 								"",
 								[
-									"amplifyagoraLambdaRole7d6d7125",
+									"amplifyagoraLambdaRole1bed91e9",
 									"-",
 									{
 										"Ref": "env"

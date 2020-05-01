@@ -28,7 +28,7 @@
 			"dependsOn": [
 				{
 					"category": "function",
-					"resourceName": "chargelambda",
+					"resourceName": "orderlambda",
 					"attributes": [
 						"Name",
 						"Arn"
@@ -44,7 +44,7 @@
 		}
 	},
 	"function": {
-		"chargelambda": {
+		"orderlambda": {
 			"build": true,
 			"providerPlugin": "awscloudformation",
 			"service": "Lambda"

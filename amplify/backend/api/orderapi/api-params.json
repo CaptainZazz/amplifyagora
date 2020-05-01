@@ -2,7 +2,7 @@
     "paths": [
         {
             "name": "/charge",
-            "lambdaFunction": "chargelambda",
+            "lambdaFunction": "orderlambda",
             "privacy": {
                 "private": true,
                 "auth": [
@@ -15,7 +15,7 @@
     "apiName": "orderapi",
     "functionArns": [
         {
-            "lambdaFunction": "chargelambda"
+            "lambdaFunction": "orderlambda"
         }
     ],
     "privacy": {
@@ -27,11 +27,12 @@
     "dependsOn": [
         {
             "category": "function",
-            "resourceName": "chargelambda",
+            "resourceName": "orderlambda",
             "attributes": [
                 "Name",
                 "Arn"
             ]
         }
-    ]
+    ],
+    "uuid": "65996c48"
 }
