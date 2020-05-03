@@ -7,7 +7,7 @@ import { onCreateMarket } from "../graphql/subscriptions";
 import Error from "./Error";
 import { Loading, Card, Icon, Tag } from "element-react";
 
-const MarketList = ({ searchResults }) => {
+const MarketList = ({ searchResults, user }) => {
   const onNewMarket = (prevQuery, newData) => {
     const updatedQuery = { ...prevQuery };
     updatedQuery.listMarkets.items = [newData.onCreateMarket, ...prevQuery.listMarkets.items ];
@@ -16,7 +16,7 @@ const MarketList = ({ searchResults }) => {
 
   return <Connect
     query={graphqlOperation(listMarkets)}
-    subscription={graphqlOperation(onCreateMarket)}
+    subscription={graphqlOperation(onCreateMarket, { owner: user && user.attributes.sub })}
     onSubscriptionMsg={onNewMarket}
   >
     {({data, loading, errors}) => {

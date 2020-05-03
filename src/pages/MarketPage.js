@@ -112,7 +112,7 @@ class MarketPage extends React.Component {
 
   checkMarketOwner = () => {
     this.setState({ 
-      isMarketOwner: this.props.user && this.props.user.username === this.state.market.owner 
+      isMarketOwner: this.props.user && this.props.user.attributes.sub === this.state.market.owner 
     });
   };
 

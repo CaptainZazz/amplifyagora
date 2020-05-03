@@ -19,8 +19,7 @@ class NewMarket extends React.Component {
       this.setState({addMarketDialog:false});
       const input = { 
         name: this.state.name,
-        tags: this.state.selectedTags,
-        owner: user.username // TODO Check API confirms this can't be used to push Items for another user. 
+        tags: this.state.selectedTags
       };
       const result = await API.graphql(graphqlOperation(createMarket, {input}));
       this.setState({name: '', selectedTags: []});

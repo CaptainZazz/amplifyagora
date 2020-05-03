@@ -3,12 +3,11 @@
 # @auth       - https://docs.amplify.aws/cli/graphql-transformer/directives#auth
 # @searchable - https://docs.amplify.aws/cli/graphql-transformer/directives#searchable
 
-type Market @model @searchable {
+type Market @model @searchable @auth(rules: [{ allow: owner, identityClaim: "sub" }]) {
   id: ID!
   name: String!
   products: [Product] @connection(name: "MarketProducts", sortField: "createdAt") # Bi-directional link
   tags: [String]
-  owner: String!
   createdAt: String
 }
 

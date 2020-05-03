@@ -21,8 +21,8 @@ export const createMarket = /* GraphQL */ `
         nextToken
       }
       tags
-      owner
       createdAt
+      owner
     }
   }
 `;
@@ -46,8 +46,8 @@ export const updateMarket = /* GraphQL */ `
         nextToken
       }
       tags
-      owner
       createdAt
+      owner
     }
   }
 `;
@@ -71,8 +71,8 @@ export const deleteMarket = /* GraphQL */ `
         nextToken
       }
       tags
-      owner
       createdAt
+      owner
     }
   }
 `;
@@ -91,8 +91,8 @@ export const createProduct = /* GraphQL */ `
           nextToken
         }
         tags
-        owner
         createdAt
+        owner
       }
       file {
         bucket
@@ -121,8 +121,8 @@ export const updateProduct = /* GraphQL */ `
           nextToken
         }
         tags
-        owner
         createdAt
+        owner
       }
       file {
         bucket
@@ -151,8 +151,8 @@ export const deleteProduct = /* GraphQL */ `
           nextToken
         }
         tags
-        owner
         createdAt
+        owner
       }
       file {
         bucket
@@ -229,8 +229,8 @@ export const createOrder = /* GraphQL */ `
           id
           name
           tags
-          owner
           createdAt
+          owner
         }
         file {
           bucket

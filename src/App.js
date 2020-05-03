@@ -77,7 +77,7 @@ class App extends React.Component {
             {/* Routes */}
             <div className="app-container">
               <Switch>
-                <Route exact path="/" component={HomePage} />
+                <Route exact path="/" component={() => <HomePage user={user} />} />
                 <Route path="/profile" component={ProfilePage} />
                 <Route path="/markets/:marketId" component={({ match }) => <MarketPage user={user} marketId={match.params.marketId} />} />
                 <Route component={(props) => (

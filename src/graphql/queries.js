@@ -18,8 +18,8 @@ export const getMarket = /* GraphQL */ `
         nextToken
       }
       tags
-      owner
       createdAt
+      owner
     }
   }
 `;
@@ -37,8 +37,8 @@ export const listMarkets = /* GraphQL */ `
           nextToken
         }
         tags
-        owner
         createdAt
+        owner
       }
       nextToken
     }
@@ -56,8 +56,8 @@ export const getProduct = /* GraphQL */ `
           nextToken
         }
         tags
-        owner
         createdAt
+        owner
       }
       file {
         bucket
@@ -85,8 +85,8 @@ export const listProducts = /* GraphQL */ `
           id
           name
           tags
-          owner
           createdAt
+          owner
         }
         file {
           bucket
@@ -139,8 +139,8 @@ export const searchMarkets = /* GraphQL */ `
           nextToken
         }
         tags
-        owner
         createdAt
+        owner
       }
       nextToken
       total

@@ -50,7 +50,7 @@ class HomePage extends React.Component {
         handleClearSearch={this.handleClearSearch} 
         handleSearch={this.handleSearch}
       />
-      <MarketList searchResults={this.state.searchResults} />
+      <MarketList searchResults={this.state.searchResults} user={this.props.user} />
     </>;
   }
 }
