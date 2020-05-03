@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { graphqlOperation } from "aws-amplify";
 import { Connect } from "aws-amplify-react";
 import { listMarkets } from "../graphql/queries";
+import { listMarkets_withProducts } from "../graphql/markets";
 import { onCreateMarket } from "../graphql/subscriptions";
 import Error from "./Error";
 import { Loading, Card, Icon, Tag } from "element-react";
@@ -14,8 +15,12 @@ const MarketList = ({ searchResults, user }) => {
     return updatedQuery;
   };
 
+  console.log('MarketList', {
+    listMarkets, listMarkets_withProducts
+  });
+
   return <Connect
-    query={graphqlOperation(listMarkets)}
+    query={graphqlOperation(listMarkets_withProducts)}
     subscription={graphqlOperation(onCreateMarket, { owner: user && user.attributes.sub })}
     onSubscriptionMsg={onNewMarket}
   >
@@ -60,7 +65,7 @@ const MarketListItem = ({ market }) => {
     <div>
       <span className="flex">
         <Link className="link" to={`/markets/${market.id}`}>{market.name}</Link>
-        <span style={{ color: 'var(--darkAmazonOrange)'}}>{ JSON.stringify(market.products) }</span>
+        <span style={{ color: 'var(--darkAmazonOrange)'}}>{ market.products ? (market.products.items||[]).length : '?' }</span>
         <img src="https://icon.now.sh/shopping_cart/f60" alt="Shopping Cart" />
       </span>
       <div style={{ color: "var(--lightSquidInk)" }}>{market.owner}</div>
