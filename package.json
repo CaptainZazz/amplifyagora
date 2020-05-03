@@ -18,7 +18,13 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "meta:auth:client_id": "node scripts/UserPoolClientId.js",
+    "graph:compile": "amplify api gql-compile",
+    "amplify:push": "amplify push",
+    "amplify:console": "amplify console",
+    "amplify:console:api": "amplify api console",
+    "amplify:console:auth": "amplify auth console"
   },
   "eslintConfig": {
     "extends": "react-app"

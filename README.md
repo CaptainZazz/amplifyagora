@@ -2,6 +2,9 @@
 https://subscription.packtpub.com/video/cloud_and_networking/9781839219726/p9/video9_1/-initializing-our-marketplace-app
 https://github.com/reedbarger/amplifyagora
 
+## Local testing
+https://docs.amplify.aws/cli/usage/mock
+
 ## schema.graphql
 
 ```graphql
