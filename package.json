@@ -22,6 +22,7 @@
     "meta:auth:client_id": "node scripts/UserPoolClientId.js",
     "graph:compile": "amplify api gql-compile",
     "amplify:push": "amplify push",
+    "amplify:push:function": "amplify function push",
     "amplify:console": "amplify console",
     "amplify:console:api": "amplify api console",
     "amplify:console:auth": "amplify auth console"

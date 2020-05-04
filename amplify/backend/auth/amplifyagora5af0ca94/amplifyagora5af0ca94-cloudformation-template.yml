@@ -9,6 +9,18 @@ Parameters:
     Type: String
   
   
+  
+  
+  functionamplifyagora5af0ca94PostConfirmationArn: 
+    Type: String
+    Default: functionamplifyagora5af0ca94PostConfirmationArn
+  
+  functionamplifyagora5af0ca94PostConfirmationName: 
+    Type: String
+    Default: functionamplifyagora5af0ca94PostConfirmationName
+  
+  
+  
 
     
   identityPoolName:
@@ -91,10 +103,7 @@ Parameters:
         
   thirdPartyAuth:
     Type: String
-                    
-  authProviders:
-    Type: CommaDelimitedList
-        
+              
   userPoolGroups:
     Type: String
               
@@ -106,13 +115,13 @@ Parameters:
                 
   hostedUI:
     Type: String
-                              
+                  
   parentStack:
     Type: String
                 
   permissions:
     Type: CommaDelimitedList
-    
+                
 Conditions:
   ShouldNotCreateEnvResources: !Equals [ !Ref env, NONE ]
 
@@ -166,6 +175,19 @@ Resources:
         
       
       
+      LambdaConfig:
+        
+        
+        
+        
+        
+          PostConfirmation: !Ref functionamplifyagora5af0ca94PostConfirmationArn
+        
+        
+        
+        
+        
+      
       
       AutoVerifiedAttributes: !Ref autoVerifiedAttributes
       
@@ -192,6 +214,15 @@ Resources:
     
   
     
+  
+  UserPoolPostConfirmationLambdaInvokePermission: 
+    Type: "AWS::Lambda::Permission"
+    DependsOn: UserPool
+    Properties: 
+      Action: "lambda:invokeFunction"
+      Principal: "cognito-idp.amazonaws.com"
+      FunctionName: !Ref functionamplifyagora5af0ca94PostConfirmationName
+      SourceArn: !GetAtt UserPool.Arn
     
   
   
