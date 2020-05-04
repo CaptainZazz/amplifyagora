@@ -8,21 +8,25 @@ export const createMarket = /* GraphQL */ `
   ) {
     createMarket(input: $input, condition: $condition) {
       id
-      name
+      createdAt
+      owner
+      ownerData {
+        id
+        username
+      }
       products {
         items {
           id
+          createdAt
+          owner
           description
           price
           shipped
-          owner
-          createdAt
         }
         nextToken
       }
+      name
       tags
-      createdAt
-      owner
     }
   }
 `;
@@ -33,21 +37,25 @@ export const updateMarket = /* GraphQL */ `
   ) {
     updateMarket(input: $input, condition: $condition) {
       id
-      name
+      createdAt
+      owner
+      ownerData {
+        id
+        username
+      }
       products {
         items {
           id
+          createdAt
+          owner
           description
           price
           shipped
-          owner
-          createdAt
         }
         nextToken
       }
+      name
       tags
-      createdAt
-      owner
     }
   }
 `;
@@ -58,21 +66,25 @@ export const deleteMarket = /* GraphQL */ `
   ) {
     deleteMarket(input: $input, condition: $condition) {
       id
-      name
+      createdAt
+      owner
+      ownerData {
+        id
+        username
+      }
       products {
         items {
           id
+          createdAt
+          owner
           description
           price
           shipped
-          owner
-          createdAt
         }
         nextToken
       }
+      name
       tags
-      createdAt
-      owner
     }
   }
 `;
@@ -83,16 +95,26 @@ export const createProduct = /* GraphQL */ `
   ) {
     createProduct(input: $input, condition: $condition) {
       id
+      createdAt
+      owner
+      ownerData {
+        id
+        username
+      }
       description
       market {
         id
-        name
+        createdAt
+        owner
+        ownerData {
+          id
+          username
+        }
         products {
           nextToken
         }
+        name
         tags
-        createdAt
-        owner
       }
       file {
         bucket
@@ -101,8 +123,6 @@ export const createProduct = /* GraphQL */ `
       }
       price
       shipped
-      owner
-      createdAt
     }
   }
 `;
@@ -113,16 +133,26 @@ export const updateProduct = /* GraphQL */ `
   ) {
     updateProduct(input: $input, condition: $condition) {
       id
+      createdAt
+      owner
+      ownerData {
+        id
+        username
+      }
       description
       market {
         id
-        name
+        createdAt
+        owner
+        ownerData {
+          id
+          username
+        }
         products {
           nextToken
         }
+        name
         tags
-        createdAt
-        owner
       }
       file {
         bucket
@@ -131,8 +161,6 @@ export const updateProduct = /* GraphQL */ `
       }
       price
       shipped
-      owner
-      createdAt
     }
   }
 `;
@@ -143,16 +171,26 @@ export const deleteProduct = /* GraphQL */ `
   ) {
     deleteProduct(input: $input, condition: $condition) {
       id
+      createdAt
+      owner
+      ownerData {
+        id
+        username
+      }
       description
       market {
         id
-        name
+        createdAt
+        owner
+        ownerData {
+          id
+          username
+        }
         products {
           nextToken
         }
+        name
         tags
-        createdAt
-        owner
       }
       file {
         bucket
@@ -161,8 +199,6 @@ export const deleteProduct = /* GraphQL */ `
       }
       price
       shipped
-      owner
-      createdAt
     }
   }
 `;
@@ -224,13 +260,19 @@ export const createOrder = /* GraphQL */ `
       }
       product {
         id
+        createdAt
+        owner
+        ownerData {
+          id
+          username
+        }
         description
         market {
           id
-          name
-          tags
           createdAt
           owner
+          name
+          tags
         }
         file {
           bucket
@@ -239,8 +281,6 @@ export const createOrder = /* GraphQL */ `
         }
         price
         shipped
-        owner
-        createdAt
       }
       shippingAddress {
         city

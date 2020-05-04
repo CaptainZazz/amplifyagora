@@ -5,21 +5,25 @@ export const getMarket = /* GraphQL */ `
   query GetMarket($id: ID!) {
     getMarket(id: $id) {
       id
-      name
+      createdAt
+      owner
+      ownerData {
+        id
+        username
+      }
       products {
         items {
           id
+          createdAt
+          owner
           description
           price
           shipped
-          owner
-          createdAt
         }
         nextToken
       }
+      name
       tags
-      createdAt
-      owner
     }
   }
 `;
@@ -32,13 +36,17 @@ export const listMarkets = /* GraphQL */ `
     listMarkets(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        name
+        createdAt
+        owner
+        ownerData {
+          id
+          username
+        }
         products {
           nextToken
         }
+        name
         tags
-        createdAt
-        owner
       }
       nextToken
     }
@@ -48,16 +56,26 @@ export const getProduct = /* GraphQL */ `
   query GetProduct($id: ID!) {
     getProduct(id: $id) {
       id
+      createdAt
+      owner
+      ownerData {
+        id
+        username
+      }
       description
       market {
         id
-        name
+        createdAt
+        owner
+        ownerData {
+          id
+          username
+        }
         products {
           nextToken
         }
+        name
         tags
-        createdAt
-        owner
       }
       file {
         bucket
@@ -66,8 +84,6 @@ export const getProduct = /* GraphQL */ `
       }
       price
       shipped
-      owner
-      createdAt
     }
   }
 `;
@@ -80,13 +96,19 @@ export const listProducts = /* GraphQL */ `
     listProducts(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        createdAt
+        owner
+        ownerData {
+          id
+          username
+        }
         description
         market {
           id
-          name
-          tags
           createdAt
           owner
+          name
+          tags
         }
         file {
           bucket
@@ -95,8 +117,6 @@ export const listProducts = /* GraphQL */ `
         }
         price
         shipped
-        owner
-        createdAt
       }
       nextToken
     }
@@ -134,13 +154,17 @@ export const searchMarkets = /* GraphQL */ `
     ) {
       items {
         id
-        name
+        createdAt
+        owner
+        ownerData {
+          id
+          username
+        }
         products {
           nextToken
         }
+        name
         tags
-        createdAt
-        owner
       }
       nextToken
       total
