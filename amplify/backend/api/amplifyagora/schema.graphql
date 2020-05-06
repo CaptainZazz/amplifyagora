@@ -15,7 +15,7 @@ type Market @model @searchable @auth(rules: [{ allow: owner, operations: [create
   id: ID!
   createdAt: String # TODO Resolver to create?
   owner: ID! # TODO Find out how to get, but not set
-  ownerData: CognitoUser @function(name: "getCognitoUser-${env}")
+  ownerData: CognitoUser @function(name: "amplifyagora-GetUser-${env}")
   products: [Product] @connection(name: "MarketProducts", sortField: "createdAt") # Bi-directional link
   name: String!
   tags: [String]
@@ -35,7 +35,7 @@ type Product @model @auth(rules: [{ allow: owner, operations: [create, update, d
   id: ID!
   createdAt: String # TODO Resolver to create?
   owner: ID!
-  ownerData: CognitoUser @function(name: "getCognitoUser-${env}")
+  ownerData: CognitoUser @function(name: "amplifyagora-GetUser-${env}")
   description: String!
   market: Market @connection(name: "MarketProducts") # Bi-directional link
   file: S3Object!

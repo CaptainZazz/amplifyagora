@@ -1,9 +1,0 @@
-{
-    "permissions": {
-        "auth": {
-            "amplifyagora5af0ca94": [
-                "read"
-            ]
-        }
-    }
-}

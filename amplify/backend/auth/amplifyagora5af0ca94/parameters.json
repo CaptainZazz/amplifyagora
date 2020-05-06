@@ -46,21 +46,11 @@
     },
     "useDefault": "manual",
     "userPoolGroupList": [],
-    "dependsOn": [
-        {
-            "category": "function",
-            "resourceName": "amplifyagora5af0ca94PostConfirmation",
-            "triggerProvider": "Cognito",
-            "attributes": [
-                "Arn",
-                "Name"
-            ]
-        }
-    ],
+    "dependsOn": [],
     "thirdPartyAuth": false,
     "userPoolGroups": false,
     "adminQueries": false,
-    "triggers": "{\"PostConfirmation\":[\"custom\"]}",
+    "triggers": "{}",
     "hostedUI": false,
     "parentStack": {
         "Ref": "AWS::StackId"

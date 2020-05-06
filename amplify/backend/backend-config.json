@@ -3,17 +3,7 @@
         "amplifyagora5af0ca94": {
             "service": "Cognito",
             "providerPlugin": "awscloudformation",
-            "dependsOn": [
-                {
-                    "category": "function",
-                    "resourceName": "amplifyagora5af0ca94PostConfirmation",
-                    "triggerProvider": "Cognito",
-                    "attributes": [
-                        "Arn",
-                        "Name"
-                    ]
-                }
-            ]
+            "dependsOn": []
         }
     },
     "api": {
@@ -63,25 +53,6 @@
     },
     "function": {
         "orderlambda": {
-            "build": true,
-            "providerPlugin": "awscloudformation",
-            "service": "Lambda"
-        },
-        "getCognitoUser": {
-            "build": true,
-            "providerPlugin": "awscloudformation",
-            "service": "Lambda",
-            "dependsOn": [
-                {
-                    "category": "auth",
-                    "resourceName": "amplifyagora5af0ca94",
-                    "attributes": [
-                        "UserPoolId"
-                    ]
-                }
-            ]
-        },
-        "amplifyagora5af0ca94PostConfirmation": {
             "build": true,
             "providerPlugin": "awscloudformation",
             "service": "Lambda"

@@ -14,9 +14,6 @@
         "categories": {
             "auth": {
                 "amplifyagora5af0ca94": {}
-            },
-            "function": {
-                "amplifyagora5af0ca94PostConfirmation": {}
             }
         }
     }

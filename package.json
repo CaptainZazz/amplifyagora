@@ -21,6 +21,7 @@
     "eject": "react-scripts eject",
     "meta:auth:client_id": "node scripts/UserPoolClientId.js",
     "graph:compile": "amplify api gql-compile",
+    "amplify:status": "amplify status",
     "amplify:push": "amplify push",
     "amplify:push:function": "amplify function push",
     "amplify:console": "amplify console",
