@@ -9,7 +9,10 @@ export const onCreateMarket = /* GraphQL */ `
       owner
       ownerData {
         id
-        username
+        displayName
+        orders {
+          nextToken
+        }
       }
       products {
         items {
@@ -35,7 +38,10 @@ export const onUpdateMarket = /* GraphQL */ `
       owner
       ownerData {
         id
-        username
+        displayName
+        orders {
+          nextToken
+        }
       }
       products {
         items {
@@ -61,7 +67,10 @@ export const onDeleteMarket = /* GraphQL */ `
       owner
       ownerData {
         id
-        username
+        displayName
+        orders {
+          nextToken
+        }
       }
       products {
         items {
@@ -87,7 +96,10 @@ export const onCreateProduct = /* GraphQL */ `
       owner
       ownerData {
         id
-        username
+        displayName
+        orders {
+          nextToken
+        }
       }
       description
       market {
@@ -96,7 +108,7 @@ export const onCreateProduct = /* GraphQL */ `
         owner
         ownerData {
           id
-          username
+          displayName
         }
         products {
           nextToken
@@ -122,7 +134,10 @@ export const onUpdateProduct = /* GraphQL */ `
       owner
       ownerData {
         id
-        username
+        displayName
+        orders {
+          nextToken
+        }
       }
       description
       market {
@@ -131,7 +146,7 @@ export const onUpdateProduct = /* GraphQL */ `
         owner
         ownerData {
           id
-          username
+          displayName
         }
         products {
           nextToken
@@ -157,7 +172,10 @@ export const onDeleteProduct = /* GraphQL */ `
       owner
       ownerData {
         id
-        username
+        displayName
+        orders {
+          nextToken
+        }
       }
       description
       market {
@@ -166,7 +184,7 @@ export const onDeleteProduct = /* GraphQL */ `
         owner
         ownerData {
           id
-          username
+          displayName
         }
         products {
           nextToken

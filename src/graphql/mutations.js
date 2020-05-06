@@ -12,7 +12,10 @@ export const createMarket = /* GraphQL */ `
       owner
       ownerData {
         id
-        username
+        displayName
+        orders {
+          nextToken
+        }
       }
       products {
         items {
@@ -41,7 +44,10 @@ export const updateMarket = /* GraphQL */ `
       owner
       ownerData {
         id
-        username
+        displayName
+        orders {
+          nextToken
+        }
       }
       products {
         items {
@@ -70,7 +76,10 @@ export const deleteMarket = /* GraphQL */ `
       owner
       ownerData {
         id
-        username
+        displayName
+        orders {
+          nextToken
+        }
       }
       products {
         items {
@@ -99,7 +108,10 @@ export const createProduct = /* GraphQL */ `
       owner
       ownerData {
         id
-        username
+        displayName
+        orders {
+          nextToken
+        }
       }
       description
       market {
@@ -108,7 +120,7 @@ export const createProduct = /* GraphQL */ `
         owner
         ownerData {
           id
-          username
+          displayName
         }
         products {
           nextToken
@@ -137,7 +149,10 @@ export const updateProduct = /* GraphQL */ `
       owner
       ownerData {
         id
-        username
+        displayName
+        orders {
+          nextToken
+        }
       }
       description
       market {
@@ -146,7 +161,7 @@ export const updateProduct = /* GraphQL */ `
         owner
         ownerData {
           id
-          username
+          displayName
         }
         products {
           nextToken
@@ -175,7 +190,10 @@ export const deleteProduct = /* GraphQL */ `
       owner
       ownerData {
         id
-        username
+        displayName
+        orders {
+          nextToken
+        }
       }
       description
       market {
@@ -184,7 +202,7 @@ export const deleteProduct = /* GraphQL */ `
         owner
         ownerData {
           id
-          username
+          displayName
         }
         products {
           nextToken
@@ -202,26 +220,6 @@ export const deleteProduct = /* GraphQL */ `
     }
   }
 `;
-export const registerUser = /* GraphQL */ `
-  mutation RegisterUser(
-    $input: CreateUserInput!
-    $condition: ModelUserConditionInput
-  ) {
-    registerUser(input: $input, condition: $condition) {
-      id
-      username
-      email
-      registered
-      orders {
-        items {
-          id
-          createdAt
-        }
-        nextToken
-      }
-    }
-  }
-`;
 export const updateUser = /* GraphQL */ `
   mutation UpdateUser(
     $input: UpdateUserInput!
@@ -229,9 +227,7 @@ export const updateUser = /* GraphQL */ `
   ) {
     updateUser(input: $input, condition: $condition) {
       id
-      username
-      email
-      registered
+      displayName
       orders {
         items {
           id
@@ -251,9 +247,7 @@ export const createOrder = /* GraphQL */ `
       id
       user {
         id
-        username
-        email
-        registered
+        displayName
         orders {
           nextToken
         }
@@ -264,7 +258,7 @@ export const createOrder = /* GraphQL */ `
         owner
         ownerData {
           id
-          username
+          displayName
         }
         description
         market {

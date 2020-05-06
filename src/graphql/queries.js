@@ -9,7 +9,10 @@ export const getMarket = /* GraphQL */ `
       owner
       ownerData {
         id
-        username
+        displayName
+        orders {
+          nextToken
+        }
       }
       products {
         items {
@@ -40,7 +43,7 @@ export const listMarkets = /* GraphQL */ `
         owner
         ownerData {
           id
-          username
+          displayName
         }
         products {
           nextToken
@@ -60,7 +63,10 @@ export const getProduct = /* GraphQL */ `
       owner
       ownerData {
         id
-        username
+        displayName
+        orders {
+          nextToken
+        }
       }
       description
       market {
@@ -69,7 +75,7 @@ export const getProduct = /* GraphQL */ `
         owner
         ownerData {
           id
-          username
+          displayName
         }
         products {
           nextToken
@@ -100,7 +106,7 @@ export const listProducts = /* GraphQL */ `
         owner
         ownerData {
           id
-          username
+          displayName
         }
         description
         market {
@@ -126,9 +132,7 @@ export const getUser = /* GraphQL */ `
   query GetUser($id: ID!) {
     getUser(id: $id) {
       id
-      username
-      email
-      registered
+      displayName
       orders {
         items {
           id
@@ -158,7 +162,7 @@ export const searchMarkets = /* GraphQL */ `
         owner
         ownerData {
           id
-          username
+          displayName
         }
         products {
           nextToken
