@@ -10,9 +10,17 @@ var apiAmplifyagoraGraphQLAPIIdOutput = process.env.API_AMPLIFYAGORA_GRAPHQLAPII
 Amplify Params - DO NOT EDIT */
 
 /**
- * @typedef {object} User
+ * @typedef {object} DynamoUser
+ * @property {string} id
+ * @property {string} displayName
+ * @property {string} createdAt
+ * @property {string} modifiedAt
+ */
+/**
+ * @typedef {object} CognitoUser
  * @property {string} id
  * @property {string} userName
+ * @property {string} createdAt
  */
 
 var region = getEnvVar('REGION');
@@ -20,21 +28,21 @@ var TableName = getEnvVar('API_AMPLIFYAGORA_USERTABLE_NAME');
 var UserPoolId = getEnvVar('AUTH_AMPLIFYAGORA5AF0CA94_USERPOOLID');
 
 // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/CognitoIdentityServiceProvider.html
-const { CognitoIdentityServiceProvider } = require('aws-sdk');
+const { DynamoDB, CognitoIdentityServiceProvider } = require('aws-sdk');
+const dynamodb = new DynamoDB({ region, apiVersion: '2012-08-10' });
 const cognitoIdentityServiceProvider = new CognitoIdentityServiceProvider();
-
-const { DynamoDB } = require('aws-sdk');
-var dynamodb = new DynamoDB({ region });
 
 /**
  * A resolver for GraphQL that retrieves user data from Cognito, based on the user ID that already exists on the model.
+ * Gets but the Cognito Subscription ID ('sub') because it is unique, while username can be reused.
  * @param {object} event 
  * @param {object} event.source - Initial data on the GraphQL model being resolved.
  * @param {string} event.fieldName - The name of the field we're trying to resolve.
- * @returns {User}
+ * @returns {DynamoUser}
  */
 exports.handler = async (event) => {
     const {fieldName, source} = event;
+    logVar.group('GetUser');
     
     // Get userId from sister field.
     // If this field is "ownerData", sister might be "owner".
@@ -42,15 +50,32 @@ exports.handler = async (event) => {
     // If this field is "authorObject", sister might be "authorId".
     const sourceFieldName = removeStrings(fieldName, ['Data', 'Object']); // For "ownerData", get ID from "owner".
     const userId = getValueWithSuffix(source, sourceFieldName, ['Id', 'ID', 'Sub', '']); // If sourceFieldName is "owner", try getting the ID with a few prefixes first (i.e. "ownerId").
-    
+    logVar('input', {
+        fieldName, source, userId
+    });
+
     let result = null;
-    if (userId) {
-        result = getDynamoUser(userId); // Get existing user data
-        if (!result) {
-            const cognitoUser = getCognitoUser(userId); // Get user data from cognito
-            result = addDynamoUser(cognitoUser.id, cognitoUser.userName); // Add user data to database
+    try {
+        await describeTable(TableName);
+
+        if (userId) {
+            logVar('get existing user', userId);
+            result = await getDynamoUser(userId); // Get existing user data
+            logVar('existing user', isEmpty(result) ? 'empty' : 'valid', result);
+            if (isEmpty(result)) {
+                const cognitoUser = await getCognitoUser(userId); // Get user data from cognito
+                if (!isEmpty(cognitoUser)) {
+                    result = await addDynamoUser(cognitoUser.id, cognitoUser.userName, cognitoUser.createdAt); // Add user data to database
+                }
+            }
         }
+    } catch(e) {
+        logVar('Error', e);
+        throw e;
     }
+    logVar('Return', result);
+    
+    logVar.groupEnd();
     return result;
 };
 
@@ -105,43 +130,86 @@ function getProperty(object, ...keys) {
     );
 }
 
+function isEmpty(obj) {
+    return !obj || Object.keys(obj).length === 0;
+}
+
 /**
  * Transform a DynamoDB User Item to a response object.
  * @param {object} user 
- * @returns {User}
+ * @returns {DynamoUser}
  */
 function transformDynamoUser(user) {
-    return user ? {
+    const result = user ? {
         id: getProperty(user, 'id', 'S'),
-        userName: getProperty(user, 'userName', 'S')
+        displayName: getProperty(user, 'displayName', 'S')
     } : null;
+    logVar('transformDynamoUser', {user, result})
+    return result;
 }
 
 /**
  * Get a user from Dynamo
  * @param {string} userId 
- * @returns {User}
+ * @returns {DynamoUser}
  */
 async function getDynamoUser(userId) {
-    const result = await dynamodb.getItem({
+    logVar.group('getDynamoUser')('userId', userId);
+    // https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_GetItem.html
+    
+    const params = {
         TableName,
         Key: {
             id: { S: userId }
         }
-    }).promise();
+    }
+    logVar('params', params);
+     const result = await dynamodb.getItem(params).promise();
+    logVar('result', result);
 
-    const user = result && result.Item;
-    logVar('getDynamoUser', { userId, result, user });
-    return transformDynamoUser(user);
+    const user = isEmpty(result && result.Item) ? null : result.Item;
+    logVar('user', user);
+    const out = transformDynamoUser(user);
+    logVar('out', out).groupEnd();
+    return out;
 }
 /**
  * Add a user to Dynamo and return them
  * @param {string} userId 
  * @param {string} userName 
- * @returns {User}
+ * @returns {DynamoUser}
  */
-async function addDynamoUser(userId, userName) {
+async function addDynamoUser(userId, userName, createdAt) {
+    logVar('--------------------------------').group('addDynamoUser')('input', { userId, userName, createdAt });
+    logVar('createdAt type', typeof createdAt);
+    const now = (new Date()).toISOString();
+    /*
     const result = await dynamodb.putItem({
+        TableName,
+        ReturnValues: 'ALL_NEW',
+        // Key: {
+        //     id: { S: userId }
+        // },
+        // // https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_UpdateItem.html#DDB-UpdateItem-request-UpdateExpression
+        // // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.PreventingAttributeOverwrites
+        // UpdateExpression: `
+        //     SET userName = :userName
+        //     SET createdAt = if_not_exists(createdAt, :now)
+        //     SET modifiedAt = :now
+        // `,
+        // ExpressionAttributeValues: {
+        //     ':userName': { S: userName },
+        //     ':now': { S: (new Date()).toISOString() },
+        // }
+        Item: {
+            id: { S: userId },
+            userName: { S: userName },
+            createdAt: { S: now },
+            modifiedAt: { S: now },
+        }
+    });
+    */
+   const params = {
         TableName,
         ReturnValues: 'ALL_NEW',
         Key: {
@@ -149,55 +217,67 @@ async function addDynamoUser(userId, userName) {
         },
         // https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_UpdateItem.html#DDB-UpdateItem-request-UpdateExpression
         // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.PreventingAttributeOverwrites
-        UpdateExpression: `
-            SET userName = :userName
-            SET createdAt = if_not_exists(createdAt, :now)
-            SET modifiedAt = :now
-        `,
+        UpdateExpression: 'SET ' +[
+            'displayName = if_not_exists(displayName, :displayName)',
+            'createdAt = if_not_exists(createdAt, :createdAt)',
+            'modifiedAt = :now',
+        ].join(', '),
         ExpressionAttributeValues: {
-            ':userName': { S: userName },
+            ':displayName': { S: userName },
+            ':createdAt': { S: createdAt },
             ':now': { S: (new Date()).toISOString() },
         }
-    });
-    const user = result && result.Attributes;
-    logVar('getDynamoUser', { userId, userName, result, user });
-    return transformDynamoUser(user);
+    }
+    logVar('putItem params', params);
+    const result = await dynamodb.updateItem(params).promise();
+    logVar('putItem result', result);
+    logVar('putItem result keys', Object.keys(result));
+    logVar('putItem result params', result.params);
+    const user = isEmpty(result && result.Attributes) ? null : result.Attributes;
+    logVar('user', user);
+    const out = transformDynamoUser(user);
+    logVar('out', out).groupEnd();
+    return out;
 }
 
 /**
  * Get a user from Cognito
  * @param {string} userId 
- * @returns {User}
+ * @returns {CognitoUser}
  */
 async function getCognitoUser(userId) {
-    if (userId) {
-        const result = await cognitoIdentityServiceProvider.listUsers({
-            UserPoolId,
-            Filter: `sub="${userId}"`,
-            Limit: 1
-        }).promise();
+    logVar.group('getCognitoUser')('userId', userId);
+    const result = await cognitoIdentityServiceProvider.listUsers({
+        UserPoolId,
+        Filter: `sub="${userId}"`,
+        Limit: 1
+    }).promise();
+    logVar('listUsers result', result);
 
-        /* {
-            Attributes: [
-                {Name: "sub", Value: "00001111-aaaa-bbbb-cccc-111122223333"}, 
-                {Name: "email", Value: "user1@example.com"}
-            ],
-            Enabled: true,
-            UserCreateDate: "2020-01-00T00:00:00.000Z",
-            UserLastModifiedDate: "2020-01-00T00:00:00.000Z",
-            UserStatus: "CONFIRMED",
-            Username: "user1"
-        } */
-        const user = result.Users.pop();
+    /* {
+        Attributes: [
+            {Name: "sub", Value: "00001111-aaaa-bbbb-cccc-111122223333"}, 
+            {Name: "email", Value: "user1@example.com"}
+        ],
+        Enabled: true,
+        UserCreateDate: "2020-01-00T00:00:00.000Z",
+        UserLastModifiedDate: "2020-01-00T00:00:00.000Z",
+        UserStatus: "CONFIRMED",
+        Username: "user1"
+    } */
+    const user = result.Users.pop();
+    logVar('user', user);
+    let out = null;
 
-        if (user && user.UserStatus && user.UserStatus !== 'ARCHIVED') {
-            return {
-                id: userId,
-                userName: user.Username
-            };
-        }
+    if (user && user.UserStatus && user.UserStatus !== 'ARCHIVED') {
+        out = {
+            id: userId,
+            userName: user.Username,
+            createdAt: user.UserCreateDate.toISOString()
+        };
     }
-    return null
+    logVar('out', out).groupEnd();
+    return out
 }
 
 /**
@@ -206,5 +286,37 @@ async function getCognitoUser(userId) {
  * @param {*} value 
  */
 function logVar(label, value) {
-    console.log('GetUser', label, JSON.stringify(value, null, 2));
+    const groups = logVar._groups.join('') || '';
+    if (arguments.length > 1) {
+        try {
+            value = JSON.stringify(value, null, 2);
+        } catch(e) {}
+        console.log(groups, label+':', value);
+    } else {
+        console.log(groups, label);
+    }
+    return logVar;
 }
+logVar.group = function(name) {
+    logVar._groups.push('['+name+']');
+    return logVar;
+}
+logVar.groupEnd = function() {
+    logVar._groups.pop();
+    return logVar;
+}
+logVar._groups = [];
+
+async function describeTable(TableName) {
+    logVar.group('describeTable')('TableName', TableName);
+    try {
+        const result = await dynamodb.describeTable({TableName}).promise();
+        logVar('Result', result).groupEnd();
+        return result;
+    } catch (e) {
+        logVar('Error', e.message).groupEnd();
+        throw e;
+    }
+}
+
+// TODO Error handling

@@ -1,5 +1,10 @@
 {
     "permissions": {
+        "auth": {
+            "amplifyagora5af0ca94": [
+                "read"
+            ]
+        },
         "storage": {
             "User:@model(appsync)": [
                 "create",
