@@ -68,7 +68,7 @@ const MarketListItem = ({ market }) => {
         <span style={{ color: 'var(--darkAmazonOrange)'}}>{ market.products ? (market.products.items||[]).length : '?' }</span>
         <img src="https://icon.now.sh/shopping_cart/f60" alt="Shopping Cart" />
       </span>
-      <div style={{ color: "var(--lightSquidInk)" }}>{market.owner}</div>
+      <div style={{ color: "var(--lightSquidInk)" }}>{market.ownerData ? market.ownerData.displayName : 'unowned'}</div>
     </div>
     <div>{market.tags && market.tags.map( tag => <Tag key={tag} type="danger" className="mx-1">{tag}</Tag> )}</div>
   </Card>
