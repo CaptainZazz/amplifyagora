@@ -70,7 +70,7 @@ class Product extends React.Component {
           </div>
           <div className="text-right">
             <span className="mx-1">${convertCentsToDollars(product.price)}</span>
-            {!isProductOwner && <PayButton />}
+            {!isProductOwner && <PayButton product={product} user={user} />}
           </div>
         </div>
       </Card>
