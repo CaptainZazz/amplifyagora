@@ -1,6 +1,20 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getConfig = /* GraphQL */ `
+  query GetConfig {
+    getConfig {
+      userId
+      user {
+        id
+        displayName
+        orders {
+          nextToken
+        }
+      }
+    }
+  }
+`;
 export const getMarket = /* GraphQL */ `
   query GetMarket($id: ID!) {
     getMarket(id: $id) {

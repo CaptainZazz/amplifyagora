@@ -1,13 +1,20 @@
-# Custom Queries can be added here
-# type Query {}
-# type Mutation {}
-# type Subscription {}
-
 # @model      - https://docs.amplify.aws/cli/graphql-transformer/directives#model
 # @connection - https://docs.amplify.aws/cli/graphql-transformer/directives#connection
 # @auth       - https://docs.amplify.aws/cli/graphql-transformer/directives#auth
 # @searchable - https://docs.amplify.aws/cli/graphql-transformer/directives#searchable
 # @function   - https://docs.amplify.aws/cli/graphql-transformer/directives#function
+
+# Custom Queries
+type Query {
+  getConfig: Config
+}
+# type Mutation {}
+# type Subscription {}
+
+type Config {
+  userId: ID!
+  user: User @function(name: "amplifyagora-GetUser-${env}")
+}
 
 # The market Model
 type Market @model @searchable @auth(rules: [{ allow: owner, operations: [create, update, delete], identityClaim: "sub" }]) 
@@ -72,6 +79,7 @@ input S3ObjectInput {
 
 ############################
 
+# https://docs.amplify.aws/cli/graphql-transformer/resolvers
 type User @model( 
   queries: { get: "getUser" }, mutations: { update: "updateUser" }, subscriptions: null 
 ) @auth(rules: [

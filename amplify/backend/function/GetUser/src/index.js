@@ -36,20 +36,19 @@ const cognitoIdentityServiceProvider = new CognitoIdentityServiceProvider();
  * A resolver for GraphQL that retrieves user data from Cognito, based on the user ID that already exists on the model.
  * Gets but the Cognito Subscription ID ('sub') because it is unique, while username can be reused.
  * @param {object} event 
- * @param {object} event.source - Initial data on the GraphQL model being resolved.
+ * @param {boolean} event.getLoggedInUser - If we want to get data for the logged in user.
  * @param {string} event.fieldName - The name of the field we're trying to resolve.
  * @returns {DynamoUser}
  */
 exports.handler = async (event) => {
-    const {fieldName, source} = event;
-    
-    // Get userId from sister field.
-    // If this field is "ownerData", sister might be "owner".
-    // If this field is "user", sister might be "userID".
-    // If this field is "authorObject", sister might be "authorId".
-    const sourceFieldName = removeStrings(fieldName, ['Data', 'Object']); // For "ownerData", get ID from "owner".
-    const userId = getValueWithSuffix(source, sourceFieldName, ['Id', 'ID', 'Sub', '']); // If sourceFieldName is "owner", try getting the ID with a few prefixes first (i.e. "ownerId").
-    console.log('GetUser input', { userId, fieldName, source, Region, TableName });
+    console.log('GetUser event', event);
+    let userId = null;
+    if (event.getLoggedInUser) {
+        userId = getProperty(event, 'identity', 'sub');
+    } else if (event.fieldName) {
+        userId = getUserIdFromField(event);
+    }
+    console.log('GetUser input', { userId, Region, TableName });
 
     let result = null;
     try {
@@ -65,6 +64,8 @@ exports.handler = async (event) => {
                     console.log('GetUser User does not exist', userId);
                 }
             }
+        } else {
+            console.log('No userId');
         }
     } catch(e) {
         console.log('GetUser error', userId, e);
@@ -73,6 +74,21 @@ exports.handler = async (event) => {
     console.log('GetUser result', userId, result);
     return result;
 };
+
+/**
+ * Get userId from sister field.
+ * If this field is "ownerData", sister might be "owner".
+ * If this field is "user", sister might be "userID".
+ * If this field is "authorObject", sister might be "authorId".
+ * @param {object} event 
+ * @param {string} event.fieldName - The name of the field we're trying to resolve.
+ * @param {object} event.source - Initial data on the GraphQL model being resolved.
+ */
+function getUserIdFromField(event) {
+    const {fieldName, source} = event;
+    const sourceFieldName = removeStrings(fieldName, ['Data', 'Object']); // For "ownerData", get ID from "owner".
+    return getValueWithSuffix(source, sourceFieldName, ['Id', 'ID', 'Sub', '']); // If sourceFieldName is "owner", try getting the ID with a few prefixes first (i.e. "ownerId").
+}
 
 /**
  * Transform a DynamoDB User Item to a response object.

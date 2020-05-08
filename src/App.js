@@ -1,12 +1,13 @@
 import React from "react";
 import "./App.css";
-import { Auth, Hub } from 'aws-amplify';
+import { Auth, Hub, API, graphqlOperation } from 'aws-amplify';
 import { Authenticator, AmplifyTheme } from 'aws-amplify-react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import ProfilePage from './pages/ProfilePage';
 import MarketPage from './pages/MarketPage';
 import NavBar from './components/Navbar';
+import {getUser} from './graphql/queries';
 
 export const UserContext = React.createContext();
 
@@ -27,9 +28,15 @@ class App extends React.Component {
 
   async getUserData() {
     try {
-      const result = await Auth.currentAuthenticatedUser();
-      console.info('App.getUserData', result);
-      this.setState({ user: result || null });
+      const cognitoUser = await Auth.currentAuthenticatedUser();
+      console.info('App.getUserData cognitoUser', cognitoUser);
+      this.setState({ user: cognitoUser || null });
+
+      const user = await API.graphql(graphqlOperation(getUser, {
+        id: cognitoUser.attributes.sub
+      }));
+      console.info('App.getUserData user', user); // TODO getUser to get users that don't exist in Dynamo yet
+
     } catch (e) {
       console.warn('App.getUserData', e);
       this.setState({ user: null });
