@@ -67,8 +67,8 @@
 				"Runtime": "nodejs12.x",
 				"Timeout": "25",
 				"Code": {
-					"S3Bucket": "amplify-amplifyagora-dev-122948-deployment",
-					"S3Key": "amplify-builds/orderlambda-7551596938397347672f-build.zip"
+					"S3Bucket": "amplify-amplifyagora-dev-160533-deployment",
+					"S3Key": "amplify-builds/orderlambda-314d6443627765677230-build.zip"
 				}
 			}
 		},
