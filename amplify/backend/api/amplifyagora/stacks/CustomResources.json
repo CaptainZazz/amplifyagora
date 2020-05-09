@@ -31,24 +31,24 @@
 			"Type": "Custom::EmptyResource",
 			"Condition": "AlwaysFalse"
 		},
-		"GetUserLambdaDataSource": {
+		"GetConfigLambdaDataSource": {
 			"Type": "AWS::AppSync::DataSource",
 			"Properties": {
 				"ApiId": { "Ref": "AppSyncApiId" },
-				"Name": "GetUserLambda",
+				"Name": "GetConfigLambda",
 				"Type": "AWS_LAMBDA",
-				"ServiceRoleArn": { "Fn::GetAtt": [ "GetUserLambdaDataSourceRole", "Arn" ] },
+				"ServiceRoleArn": { "Fn::GetAtt": [ "GetConfigLambdaDataSourceRole", "Arn" ] },
 				"LambdaConfig": {
 					"LambdaFunctionArn": {
-						"Fn::Sub": [ "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:amplifyagora-GetUser-${env}", { "env": { "Ref": "env" } } ]
+						"Fn::Sub": [ "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:amplifyagora-GetConfig-${env}", { "env": { "Ref": "env" } } ]
 					}
 				}
 			}
 		},
-		"GetUserLambdaDataSourceRole": {
+		"GetConfigLambdaDataSourceRole": {
 			"Type": "AWS::IAM::Role",
 			"Properties": {
-				"RoleName": { "Fn::Sub": [ "GetUserLambdaDataSourceRole-${env}", { "env": { "Ref": "env" } } ] },
+				"RoleName": { "Fn::Sub": [ "GetConfigLambdaDataSourceRole-${env}", { "env": { "Ref": "env" } } ] },
 				"AssumeRolePolicyDocument": {
 					"Version": "2012-10-17",
 					"Statement": [{
@@ -64,7 +64,7 @@
 						"Statement": [ {
 							"Effect": "Allow",
 							"Action": [ "lambda:invokeFunction" ],
-							"Resource": [ { "Fn::Sub": [ "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:amplifyagora-GetUser-${env}", { "env": { "Ref": "env" } } ] } ]
+							"Resource": [ { "Fn::Sub": [ "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:amplifyagora-GetConfig-${env}", { "env": { "Ref": "env" } } ] } ]
 						} ]
 					}
 				} ]
@@ -74,7 +74,7 @@
 			"Type": "AWS::AppSync::Resolver",
 			"Properties": {
 				"ApiId": { "Ref": "AppSyncApiId" },
-				"DataSourceName": { "Fn::GetAtt": [ "GetUserLambdaDataSource", "Name" ] },
+				"DataSourceName": { "Fn::GetAtt": [ "GetConfigLambdaDataSource", "Name" ] },
 				"TypeName": "Query",
 				"FieldName": "getConfig",
 				"RequestMappingTemplateS3Location": { "Fn::Sub": [

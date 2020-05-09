@@ -108,7 +108,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "amplify-amplifyagora-dev-122948-deployment",
-					"S3Key": "amplify-builds/GetUser-72746b565a667a386f58-build.zip"
+					"S3Key": "amplify-builds/GetUser-76506c683334527a4944-build.zip"
 				}
 			}
 		},

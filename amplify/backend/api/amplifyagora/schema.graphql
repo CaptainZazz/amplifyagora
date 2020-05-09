@@ -12,7 +12,7 @@ type Query {
 # type Subscription {}
 
 type Config {
-  userId: ID!
+  userId: ID
   user: User @function(name: "amplifyagora-GetUser-${env}")
 }
 
