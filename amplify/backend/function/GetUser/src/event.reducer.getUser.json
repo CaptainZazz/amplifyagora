@@ -1,6 +1,6 @@
 {
   "type": "Query",
-  "field": "getConfig",
+  "field": "getUser",
   "arguments": {},
   "identity": {
     "claims": {
@@ -21,6 +21,5 @@
     "sourceIp": [ "0.0.0.0" ],
     "sub": "00001111-aaaa-bbbb-cccc-111122223333",
     "username": "testUser"
-  },
-  "source": null
+  }
 }

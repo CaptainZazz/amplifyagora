@@ -3,7 +3,8 @@
     "operation": "Invoke",
     "payload": {
         "type": "Query",
-        "field": "getConfig",
+        "field": "getUser",
+        "getLoggedInUser": true,
         "arguments": $utils.toJson($context.arguments),
         "identity": $utils.toJson($context.identity)
     }

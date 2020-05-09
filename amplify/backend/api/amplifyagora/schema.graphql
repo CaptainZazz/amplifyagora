@@ -7,13 +7,17 @@
 # Custom Queries
 type Query {
   getConfig: Config
+  getUser: User
 }
 # type Mutation {}
 # type Subscription {}
 
 type Config {
   userId: ID
+  userName: String
   user: User @function(name: "amplifyagora-GetUser-${env}")
+  env: String!
+  region: String!
 }
 
 # The market Model

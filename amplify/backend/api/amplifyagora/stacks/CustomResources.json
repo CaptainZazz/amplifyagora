@@ -70,7 +70,7 @@
 				} ]
 			}
 		},
-		"QueryGetConfigResolver": {
+		"GetConfigQueryResolver": {
 			"Type": "AWS::AppSync::Resolver",
 			"Properties": {
 				"ApiId": { "Ref": "AppSyncApiId" },
@@ -83,6 +83,62 @@
 				] },
 				"ResponseMappingTemplateS3Location": { "Fn::Sub": [
 					"s3://${S3DeploymentBucket}/${S3DeploymentRootKey}/resolvers/Query.getConfig.res.vtl",
+					{ "S3DeploymentBucket": { "Ref": "S3DeploymentBucket" }, "S3DeploymentRootKey": { "Ref": "S3DeploymentRootKey" } }
+				] }
+			}
+		},
+		"GetUserLambdaDataSource": {
+			"Type": "AWS::AppSync::DataSource",
+			"Properties": {
+				"ApiId": { "Ref": "AppSyncApiId" },
+				"Name": "GetUserLambda",
+				"Type": "AWS_LAMBDA",
+				"ServiceRoleArn": { "Fn::GetAtt": [ "GetUserLambdaDataSourceRole", "Arn" ] },
+				"LambdaConfig": {
+					"LambdaFunctionArn": {
+						"Fn::Sub": [ "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:amplifyagora-GetUser-${env}", { "env": { "Ref": "env" } } ]
+					}
+				}
+			}
+		},
+		"GetUserLambdaDataSourceRole": {
+			"Type": "AWS::IAM::Role",
+			"Properties": {
+				"RoleName": { "Fn::Sub": [ "GetUserLambdaDataSourceRole-${env}", { "env": { "Ref": "env" } } ] },
+				"AssumeRolePolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [{
+						"Effect": "Allow",
+						"Principal": { "Service": "appsync.amazonaws.com" },
+						"Action": "sts:AssumeRole"
+					}]
+				},
+				"Policies": [ {
+					"PolicyName": "InvokeLambdaFunction",
+					"PolicyDocument": {
+						"Version": "2012-10-17",
+						"Statement": [ {
+							"Effect": "Allow",
+							"Action": [ "lambda:invokeFunction" ],
+							"Resource": [ { "Fn::Sub": [ "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:amplifyagora-GetUser-${env}", { "env": { "Ref": "env" } } ] } ]
+						} ]
+					}
+				} ]
+			}
+		},
+		"GetUserQueryResolver": {
+			"Type": "AWS::AppSync::Resolver",
+			"Properties": {
+				"ApiId": { "Ref": "AppSyncApiId" },
+				"DataSourceName": { "Fn::GetAtt": [ "GetUserLambdaDataSource", "Name" ] },
+				"TypeName": "Query",
+				"FieldName": "getUser",
+				"RequestMappingTemplateS3Location": { "Fn::Sub": [
+					"s3://${S3DeploymentBucket}/${S3DeploymentRootKey}/resolvers/Query.getUser.req.vtl",
+					{ "S3DeploymentBucket": { "Ref": "S3DeploymentBucket" }, "S3DeploymentRootKey": { "Ref": "S3DeploymentRootKey" } }
+				] },
+				"ResponseMappingTemplateS3Location": { "Fn::Sub": [
+					"s3://${S3DeploymentBucket}/${S3DeploymentRootKey}/resolvers/Query.getUser.res.vtl",
 					{ "S3DeploymentBucket": { "Ref": "S3DeploymentBucket" }, "S3DeploymentRootKey": { "Ref": "S3DeploymentRootKey" } }
 				] }
 			}

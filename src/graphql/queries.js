@@ -5,6 +5,7 @@ export const getConfig = /* GraphQL */ `
   query GetConfig {
     getConfig {
       userId
+      userName
       user {
         id
         displayName
@@ -12,6 +13,8 @@ export const getConfig = /* GraphQL */ `
           nextToken
         }
       }
+      env
+      region
     }
   }
 `;

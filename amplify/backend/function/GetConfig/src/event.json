@@ -1,13 +1,9 @@
 {
   "typeName": "Query",
-  "fieldName": "getConfig",
-  "source": { 
-   },
+  "field": "getConfig",
+  "arguments": {},
   "identity": { 
     "sub": "00001111-aaaa-bbbb-cccc-111122223333",
     "username":"user1"
-  },
-  "request": {},
-  "arguments": {},
-  "prev": {}
+  }
 }
