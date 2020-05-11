@@ -33,8 +33,12 @@ const dynamodb = new DynamoDB({ region: Region, apiVersion: '2012-08-10' });
 const cognitoIdentityServiceProvider = new CognitoIdentityServiceProvider();
 
 /**
- * A resolver for GraphQL that retrieves user data from Cognito, based on the user ID that already exists on the model.
- * Gets but the Cognito Subscription ID ('sub') because it is unique, while username can be reused.
+ * A resolver for GraphQL that retrieves user data from Cognito. 
+ * Gets by the Cognito Subscription ID ('sub') because it is unique, while username can be reused.
+ * Handles 3 scenarios:
+ * 1) If attached to a field Resolver (i.e. has 'fieldName'); get user based on the user ID that already exists on the model.
+ * 2) If as a query with an ID argument; get the user from that ID.
+ * 3) Otherwise; get the currently logged in user.
  * @param {object} event 
  * @param {boolean} event.getLoggedInUser - If we want to get data for the logged in user.
  * @param {string} event.fieldName - The name of the field we're trying to resolve.
@@ -43,12 +47,18 @@ const cognitoIdentityServiceProvider = new CognitoIdentityServiceProvider();
 exports.handler = async (event) => {
     console.log('GetUser event', event);
     let userId = null;
-    if (event.getLoggedInUser) {
-        userId = getProperty(event, 'identity', 'sub');
-    } else if (event.fieldName) {
+    const idArgument = getProperty(event, 'arguments', 'id'); // Get ID passed as a Query argument.
+
+    if (idArgument) { // If has an ID from arguments, use that.
+        userId = idArgument;
+        console.log('GetUser ID from arguments', { userId, Region, TableName });
+    } else if (event.fieldName) { // If a resolver for a field, get from ID already present on another field.
         userId = getUserIdFromField(event);
+        console.log('GetUser ID from field', { userId, Region, TableName });
+    } else { // Otherwise, use logged in user.
+        userId = getProperty(event, 'identity', 'sub');
+        console.log('GetUser ID from logged in user', { userId, Region, TableName });
     }
-    console.log('GetUser input', { userId, Region, TableName });
 
     let result = null;
     try {

@@ -1,0 +1,27 @@
+{
+  "type": "Query",
+  "field": "getUser",
+  "getLoggedInUser": true,
+  "arguments": { "id": "aaaabbbb-1111-2222-3333-cccceeeedddd" },
+  "identity": {
+    "claims": {
+      "sub": "00001111-aaaa-bbbb-cccc-111122223333",
+      "aud": "abcdefghijklmnopqrstuvwxyz",
+      "email_verified": true,
+      "event_id": "00001111-aaaa-bbbb-cccc-111122223333",
+      "token_use": "id",
+      "auth_time": 1234567890,
+      "iss": "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_123456789",
+      "cognito:username": "testUser",
+      "exp": 1234567890,
+      "iat": 1234567890,
+      "email": "testUser@something.xom"
+    },
+    "defaultAuthStrategy": "ALLOW",
+    "groups": null,
+    "issuer": "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_ruJXD9ONe",
+    "sourceIp": [ "0.0.0.0" ],
+    "sub": "00001111-aaaa-bbbb-cccc-111122223333",
+    "username": "testUser"
+  }
+}
