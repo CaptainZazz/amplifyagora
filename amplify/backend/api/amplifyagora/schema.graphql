@@ -7,7 +7,7 @@
 # Custom Queries
 type Query {
   getConfig: Config
-  getUser: User
+  getUser(id: ID): User
 }
 # type Mutation {}
 # type Subscription {}
@@ -15,7 +15,6 @@ type Query {
 type Config {
   userId: ID
   userName: String
-  user: User @function(name: "amplifyagora-GetUser-${env}")
   env: String!
   region: String!
 }
@@ -84,8 +83,9 @@ input S3ObjectInput {
 ############################
 
 # https://docs.amplify.aws/cli/graphql-transformer/resolvers
-type User @model( 
-  queries: { get: "getUser" }, mutations: { update: "updateUser" }, subscriptions: null 
+type User
+ @model( 
+  queries: { get: null, list: null }, mutations: { update: "updateUser", delete: null }, subscriptions: null 
 ) @auth(rules: [
   { allow: owner, operations: [update], ownerField: "id", identityClaim: "sub" }
 ]) 
