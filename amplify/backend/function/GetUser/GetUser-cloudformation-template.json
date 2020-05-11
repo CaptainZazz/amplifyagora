@@ -107,7 +107,7 @@
 				"Runtime": "nodejs12.x",
 				"Timeout": "25",
 				"Code": {
-					"S3Bucket": "amplify-amplifyagora-dev-234809-deployment",
+					"S3Bucket": "amplify-amplifyagora-dev-210004-deployment",
 					"S3Key": "amplify-builds/GetUser-6d717256566849556776-build.zip"
 				}
 			}
