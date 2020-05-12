@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import { onCreateProduct, onUpdateProduct, onDeleteProduct } from '../graphql/subscriptions';
 import NewProduct from '../components/NewProduct';
 import Product from '../components/Product';
-import { updateProduct } from "../graphql/mutations";
 
 class MarketPage extends React.Component {
   state = {
@@ -98,7 +97,7 @@ class MarketPage extends React.Component {
   handleGetMarket = async () => {
     const input = { id: this.props.marketId };
     try {
-      const result = await API.graphql(graphqlOperation(getMarketWithFile, input));
+      const result = await API.graphql(graphqlOperation(getMarketWithProductFiles, input));
       console.log({ result });
       this.setState(
         { market: result.data.getMarket },
@@ -117,6 +116,7 @@ class MarketPage extends React.Component {
   };
 
   render() {
+    console.log('MarketPage', this.state.market);
     const { market, isLoading, isMarketOwner } = this.state;
     if (isLoading) return <Loading fullscreen={true} />;
     return <>
@@ -131,7 +131,9 @@ class MarketPage extends React.Component {
         </span>
       </div>
 
-      <p>You ({(this.props.user && this.props.user.username) || '?'}) {isMarketOwner ? `own this.` : `don't own this, ${this.state.market.owner} does.`}</p>
+      <p>You ({(this.props.user && this.props.user.username) || '?'}) {
+        isMarketOwner ? `own this.` : `don't own this, ${(this.state.market.ownerData && this.state.market.ownerData.displayName) || '?'} does.`
+      }</p>
 
       {/* New Product */}
       <Tabs type="border-card" value={isMarketOwner ? "1" : "2"}>
@@ -155,10 +157,11 @@ class MarketPage extends React.Component {
 }
 
 // Not using auto-generated query because it doesn't include custom type (file: S3Object!)
-const getMarketWithFile = /* GraphQL */ `
+const getMarketWithProductFiles = /* GraphQL */ `
   query GetMarket($id: ID!) {
     getMarket(id: $id) {
-      id name tags owner createdAt
+      id name tags createdAt
+      ownerData { id, displayName }
       products {
         items { id description price shipped owner createdAt file{key} }
         nextToken
